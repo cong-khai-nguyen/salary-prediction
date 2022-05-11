@@ -46,3 +46,8 @@ plt.title('')
 plt.ylabel('Salary')
 plt.xticks(rotation = 90)
 plt.show()
+
+# Now that we see the outliners for each data, we want to exclude those with salary that is too low or too high that can skew our calculations
+df = df[df['Salary'] <= 250000]
+df = df[df['Salary'] >= 10000]
+df = df[df['Country'] != 'Other']
