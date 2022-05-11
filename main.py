@@ -25,7 +25,6 @@ print(df["Country"].value_counts())
 
 def shorten_categories(categories, cutoff):
     categorical_map = {}
-
     for i in range(len(categories)):
         if categories.values[i] >= cutoff:
             categorical_map[categories.index[i]] = categories.index[i]
@@ -35,6 +34,15 @@ def shorten_categories(categories, cutoff):
     return categorical_map
 
 country_map = shorten_categories(df.Country.value_counts(), 400)
+print(country_map)
 df.Country = df.Country.map(country_map)
 
 print(df.Country.value_counts())
+
+fig, ax = plt.subplots(1, 1, figsize = (12, 7))
+df.boxplot('Salary', 'Country', ax = ax)
+plt.suptitle('Salary (US$) v Country')
+plt.title('')
+plt.ylabel('Salary')
+plt.xticks(rotation = 90)
+plt.show()
