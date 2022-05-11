@@ -10,7 +10,7 @@ df = df.rename({"ConvertedCompYearly" : "Salary", "YearsCodePro" : "YearsOfExp"}
 print(df.info())
 
 # Drop all the rows that contains missing data and reset the index
-df = df.dropna().reset_index()
+df = df.dropna()
 # df = df[df["YearsOfExp"].notna()]
 # print(df.isnull().sum())
 # print(df)
@@ -20,3 +20,21 @@ df = df[df["Employment"] == "Employed full-time"]
 # After that, drop the column, since we no longer need it
 df = df.drop("Employment", axis = 1)
 print(df.info())
+
+print(df["Country"].value_counts())
+
+def shorten_categories(categories, cutoff):
+    categorical_map = {}
+
+    for i in range(len(categories)):
+        if categories.values[i] >= cutoff:
+            categorical_map[categories.index[i]] = categories.index[i]
+        else:
+            categorical_map[categories.index[i]] = 'Other'
+
+    return categorical_map
+
+country_map = shorten_categories(df.Country.value_counts(), 400)
+df.Country = df.Country.map(country_map)
+
+print(df.Country.value_counts())
