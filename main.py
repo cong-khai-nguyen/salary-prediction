@@ -49,6 +49,17 @@ plt.xticks(rotation = 90)
 plt.show()
 
 # Now that we see the outliers for each data, we want to exclude those with salary that is too low or too high that can skew our calculations
-df = df[df['Salary'] <= 250000]
+# Since USA has the most data point, I decide to find the mean salary of those from that country to set the upper limit
+print(df[df.Country == 'United States of America'].Salary.median())
+df = df[df['Salary'] <= 125000]
 df = df[df['Salary'] >= 10000]
 df = df[df['Country'] != 'Other']
+fig, ax = plt.subplots(1, 1, figsize = (12, 7))
+df.boxplot('Salary', 'Country', ax = ax)
+plt.suptitle('Salary (US$) v Country')
+plt.title('')
+plt.ylabel('Salary')
+plt.xlabel('Country')
+plt.xticks(rotation = 90)
+plt.show()
+# Now we see much less outliers in our data set
