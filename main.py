@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
-
+from sklearn.ensemble import RandomForestRegressor
 
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
@@ -128,5 +128,15 @@ accuracy = dec_tree_reg.score(x_test, y_test)
 # We can see that our model accuracy is now a bit higher but it's still not enough
 print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
 y_pred = dec_tree_reg.predict(x_test)
+error = np.sqrt(mean_squared_error(y_test, y_pred))
+print(error)
+
+
+# Now I choose Random Forest Regressor
+random_forest_reg = RandomForestRegressor(random_state=0)
+random_forest_reg.fit(x_train, y_train)
+accuracy = random_forest_reg.score(x_test, y_test)
+print("Accuracy Percentage for Random Forest Regressor: ", format(accuracy, "%"))
+y_pred = random_forest_reg.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
 print(error)
