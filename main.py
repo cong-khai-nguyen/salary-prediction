@@ -137,12 +137,15 @@ parameters = {"max_depth" : max_depth}
 
 regressor = DecisionTreeRegressor(random_state=0)
 gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error')
+gs.fit(x_train, y_train)
 regressor = gs.best_estimator_
 regressor.fit(x_train, y_train)
 accuracy = regressor.score(x_test, y_test)
 # We can see that our model accuracy is now a bit higher but it's still not enough
-print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
-
+print("Accuracy Percentage for Decision Tree Regressor after tuning: ", format(accuracy, "%"))
+y_pred = regressor.predict(x_test)
+error = np.sqrt(mean_squared_error(y_test, y_pred))
+print("${:,.02f}".format(error))
 
 # Now I choose Random Forest Regressor
 random_forest_reg = RandomForestRegressor(random_state=0)
@@ -150,5 +153,23 @@ random_forest_reg.fit(x_train, y_train)
 accuracy = random_forest_reg.score(x_test, y_test)
 print("Accuracy Percentage for Random Forest Regressor: ", format(accuracy, "%"))
 y_pred = random_forest_reg.predict(x_test)
+error = np.sqrt(mean_squared_error(y_test, y_pred))
+print("${:,.02f}".format(error))
+
+
+
+parameters = {"max_depth" : [None, 2,4,6,8,10,12],
+              "max_features" : ["sqrt", "log2", None],
+              "n_estimators" : [100,140,160,180,200,300]}
+
+regressor = RandomForestRegressor(random_state=0)
+gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
+gs.fit(x_train, y_train)
+regressor = gs.best_estimator_
+regressor.fit(x_train, y_train)
+accuracy = regressor.score(x_test, y_test)
+# We can see that our model accuracy is now a bit higher but it's still not enough
+print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(accuracy, "%"))
+y_pred = regressor.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
 print("${:,.02f}".format(error))
