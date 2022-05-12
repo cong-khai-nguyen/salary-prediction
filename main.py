@@ -5,6 +5,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
+from sklearn.tree import DecisionTreeRegressor
+
 
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
@@ -98,20 +100,33 @@ df['EdLevel'] = df['EdLevel'].apply(clean_edu)
 le = LabelEncoder()
 
 df['EdLevel'] = le.fit_transform(df['EdLevel'])
-print(df.EdLevel.unique())
+# print(df.EdLevel.unique())
 
 df['Country'] = le.fit_transform(df['Country'])
-print(df.Country.unique())
+# print(df.Country.unique())
 
 # Separate features and label
 x = df.drop('Salary', axis = 1)
 y = df['Salary']
-
-linear = LinearRegression()
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.1)
 
+
+linear = LinearRegression()
 linear.fit(x_train, y_train)
-y_pred = linear.predict(x_test)
 accuracy = linear.score(x_test, y_test)
-print(y_pred)
-print("Accuracy Percentage: ", format(accuracy, "%"));
+# We can see that our model accuracy is very low
+print("Accuracy Percentage for Linear Regression: ", format(accuracy, "%"))
+# When calculating the error, we can see model predict off by approx $26791
+y_pred = linear.predict(x_test)
+error = np.sqrt(mean_squared_error(y_test, y_pred))
+print(error)
+
+# Now I choose Decision Tree Regressor as the new model
+dec_tree_reg = DecisionTreeRegressor(random_state=0)
+dec_tree_reg.fit(x_train, y_train)
+accuracy = dec_tree_reg.score(x_test, y_test)
+# We can see that our model accuracy is now a bit higher but it's still not enough
+print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
+y_pred = dec_tree_reg.predict(x_test)
+error = np.sqrt(mean_squared_error(y_test, y_pred))
+print(error)
