@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from sklearn.preprocessing import LabelEncoder
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
 # Only get the columns that are needed for our model
@@ -75,7 +75,7 @@ def convert_exp(num):
 # Convert string to float
 df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
 
-print(df.EdLevel.unique())
+# print(df.EdLevel.unique())
 
 def clean_edu(x):
     if 'Bachelor’s degree' in x:
@@ -86,4 +86,11 @@ def clean_edu(x):
         return 'Post Grad'
     return 'Less than a Bachelors'
 
+# reclassify education level for simplicity
 df['EdLevel'] = df['EdLevel'].apply(clean_edu)
+
+# Use Label Encoder to transform string data to what computer can interpret which is numbers
+le = LabelEncoder()
+
+df['EdLevel'] = le.fit_transform(df['EdLevel'])
+print(df.EdLevel.unique())
