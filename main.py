@@ -46,12 +46,12 @@ plt.title('')
 plt.ylabel('Salary')
 plt.xlabel('Country')
 plt.xticks(rotation = 90)
-plt.show()
+# plt.show()
 
 # Now that we see the outliers for each data, we want to exclude those with salary that is too low or too high that can skew our calculations
 # Since USA has the most data point, I decide to find the mean salary of those from that country to set the upper limit
 print(df[df.Country == 'United States of America'].Salary.median())
-df = df[df['Salary'] <= 125000]
+df = df[df['Salary'] <= df[df.Country == 'United States of America'].Salary.median()]
 df = df[df['Salary'] >= 10000]
 df = df[df['Country'] != 'Other']
 fig, ax = plt.subplots(1, 1, figsize = (12, 7))
@@ -61,5 +61,16 @@ plt.title('')
 plt.ylabel('Salary')
 plt.xlabel('Country')
 plt.xticks(rotation = 90)
-plt.show()
-# Now we see much less outliers in our data set
+# plt.show()
+# Now we see fewer outliers in our data set
+
+print(df["YearsOfExp"].unique())
+
+def convert_exp(num):
+    if num == 'More than 50 years':
+        return 50
+    if num == 'Less than 1 year':
+        return 0.5
+    return float(num)
+# Convert string to float
+df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
