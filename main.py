@@ -1,6 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+import numpy as np
+
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
 # Only get the columns that are needed for our model
@@ -94,3 +99,19 @@ le = LabelEncoder()
 
 df['EdLevel'] = le.fit_transform(df['EdLevel'])
 print(df.EdLevel.unique())
+
+df['Country'] = le.fit_transform(df['Country'])
+print(df.Country.unique())
+
+# Separate features and label
+x = df.drop('Salary', axis = 1)
+y = df['Salary']
+
+linear = LinearRegression()
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.1)
+
+linear.fit(x_train, y_train)
+y_pred = linear.predict(x_test)
+accuracy = linear.score(x_test, y_test)
+print(y_pred)
+print("Accuracy Percentage: ", format(accuracy, "%"));
