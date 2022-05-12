@@ -7,6 +7,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
 
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
@@ -119,7 +120,7 @@ print("Accuracy Percentage for Linear Regression: ", format(accuracy, "%"))
 # When calculating the error, we can see model predict off by approx $26791
 y_pred = linear.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
-print(error)
+print("${:,.02f}".format(error))
 
 # Now I choose Decision Tree Regressor as the new model
 dec_tree_reg = DecisionTreeRegressor(random_state=0)
@@ -129,7 +130,18 @@ accuracy = dec_tree_reg.score(x_test, y_test)
 print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
 y_pred = dec_tree_reg.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
-print(error)
+print("${:,.02f}".format(error))
+
+max_depth = [None, 2,4,6,8,10,12]
+parameters = {"max_depth" : max_depth}
+
+regressor = DecisionTreeRegressor(random_state=0)
+gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error')
+regressor = gs.best_estimator_
+regressor.fit(x_train, y_train)
+accuracy = regressor.score(x_test, y_test)
+# We can see that our model accuracy is now a bit higher but it's still not enough
+print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
 
 
 # Now I choose Random Forest Regressor
@@ -139,4 +151,4 @@ accuracy = random_forest_reg.score(x_test, y_test)
 print("Accuracy Percentage for Random Forest Regressor: ", format(accuracy, "%"))
 y_pred = random_forest_reg.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
-print(error)
+print("${:,.02f}".format(error))
