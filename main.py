@@ -48,8 +48,8 @@ plt.xlabel('Country')
 plt.xticks(rotation = 90)
 # plt.show()
 
-# Now that we see the outliers for each data, we want to exclude those with salary that is too low or too high that can skew our calculations
-# Since USA has the most data point, I decide to find the mean salary of those from that country to set the upper limit
+# Now that we see the outliers for each data, we want to exclude those with salary that is too low or too high that can skew our predictions
+# Since USA has the most data point, I decide to find the median salary of those from the country to set the upper limit
 print(df[df.Country == 'United States of America'].Salary.median())
 df = df[df['Salary'] <= df[df.Country == 'United States of America'].Salary.median()]
 df = df[df['Salary'] >= 10000]
@@ -64,7 +64,7 @@ plt.xticks(rotation = 90)
 # plt.show()
 # Now we see fewer outliers in our data set
 
-print(df["YearsOfExp"].unique())
+# print(df["YearsOfExp"].unique())
 
 def convert_exp(num):
     if num == 'More than 50 years':
@@ -74,3 +74,16 @@ def convert_exp(num):
     return float(num)
 # Convert string to float
 df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
+
+print(df.EdLevel.unique())
+
+def clean_edu(x):
+    if 'Bachelor’s degree' in x:
+        return 'Bachelor’s degree'
+    if 'Master’s degree' in x:
+        return 'Master’s degree'
+    if 'Professional degree' in x or 'Other doctoral' in x:
+        return 'Post Grad'
+    return 'Less than a Bachelors'
+
+df['EdLevel'] = df['EdLevel'].apply(clean_edu)
