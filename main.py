@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
+import pickle
 
 df = pd.read_csv('data/survey_results_public.csv')
 # print(df.columns.sort_values())
@@ -111,6 +112,7 @@ x = df.drop('Salary', axis = 1)
 y = df['Salary']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.1)
 
+# try:
 
 linear = LinearRegression()
 linear.fit(x_train, y_train)
@@ -158,21 +160,22 @@ print("${:,.02f}".format(error))
 
 
 
-# parameters = {"max_depth" : [None, 2,4,6,8,10,12],
-#               "max_features" : ["sqrt", "log2", None],
-#               "n_estimators" : [100,140,160,180,200,300]}
-#
-# regressor = RandomForestRegressor(random_state=0)
-# gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
-# gs.fit(x_train, y_train)
-# regressor = gs.best_estimator_
-# regressor.fit(x_train, y_train)
-# accuracy = regressor.score(x_test, y_test)
-# We can see that our model accuracy is now a bit higher but it's still not enough
+parameters = {"max_depth" : [None, 2,4,6,8,10,12],
+              "max_features" : ["sqrt", "log2", None],
+              "n_estimators" : [100,140,160,180,200,300]}
+
+regressor = RandomForestRegressor(random_state=0)
+gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
+gs.fit(x_train, y_train)
+regressor = gs.best_estimator_
+regressor.fit(x_train, y_train)
+accuracy = regressor.score(x_test, y_test)
+
 print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(accuracy, "%"))
 y_pred = regressor.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
 print("${:,.02f}".format(error))
+
 
 # country, edLevel, yearsOfExp
 x = np.array([["United States of America", "Master's degree", 15]])
@@ -182,3 +185,11 @@ x = x.astype(float)
 
 y_pred = random_forest_reg.predict(x)
 print(y_pred)
+
+data = {"model" : regressor, "le_country" : le_country, "le_edu": le_edu}
+
+# Write data to pickle so we don't have to train the model everytime
+with open('saved_model.pickle', "wb") as file:
+    pickle.dump(data, file)
+
+with
