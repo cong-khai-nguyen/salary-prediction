@@ -74,122 +74,134 @@ plt.xticks(rotation = 90)
 # Now we see fewer outliers in our data set
 
 # print(df["YearsOfExp"].unique())
+regressor = []
+le_country = []
+le_edu = []
+try:
+    with open('saved_model.pickle', 'rb') as file:
+        data = pickle.load(file)
+    regressor = data['model']
+    le_country = data["le_country"]
+    le_edu = data['le_edu']
+except:
+    def convert_exp(num):
+        if num == 'More than 50 years':
+            return 50
+        if num == 'Less than 1 year':
+            return 0.5
+        return float(num)
+    # Convert string to float
+    df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
 
-def convert_exp(num):
-    if num == 'More than 50 years':
-        return 50
-    if num == 'Less than 1 year':
-        return 0.5
-    return float(num)
-# Convert string to float
-df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
+    print(df.EdLevel.unique())
 
-print(df.EdLevel.unique())
+    def clean_edu(x):
+        if 'Bachelor’s degree' in x:
+            return 'Bachelor’s degree'
+        if 'Master’s degree' in x:
+            return 'Master’s degree'
+        if 'Professional degree' in x or 'Other doctoral' in x:
+            return 'Post Grad'
+        return 'Less than a Bachelor'
 
-def clean_edu(x):
-    if 'Bachelor’s degree' in x:
-        return 'Bachelor’s degree'
-    if 'Master’s degree' in x:
-        return 'Master’s degree'
-    if 'Professional degree' in x or 'Other doctoral' in x:
-        return 'Post Grad'
-    return 'Less than a Bachelor'
+    # reclassify education level for simplicity
+    df['EdLevel'] = df['EdLevel'].apply(clean_edu)
+    print(df.EdLevel.unique())
+    # Use Label Encoder to transform string data to what computer can interpret which is numbers
+    le_country = LabelEncoder()
+    le_edu = LabelEncoder()
+    df['EdLevel'] = le_edu.fit_transform(df['EdLevel'])
+    print(df.EdLevel.unique())
 
-# reclassify education level for simplicity
-df['EdLevel'] = df['EdLevel'].apply(clean_edu)
-print(df.EdLevel.unique())
-# Use Label Encoder to transform string data to what computer can interpret which is numbers
-le_country = LabelEncoder()
-le_edu = LabelEncoder()
-df['EdLevel'] = le_edu.fit_transform(df['EdLevel'])
-print(df.EdLevel.unique())
+    df['Country'] = le_country.fit_transform(df['Country'])
+    # print(df.Country.unique())
 
-df['Country'] = le_country.fit_transform(df['Country'])
-# print(df.Country.unique())
+    # Separate features and label
+    x = df.drop('Salary', axis = 1)
+    y = df['Salary']
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.1)
 
-# Separate features and label
-x = df.drop('Salary', axis = 1)
-y = df['Salary']
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.1)
+    linear = LinearRegression()
+    linear.fit(x_train, y_train)
+    accuracy = linear.score(x_test, y_test)
+    # We can see that our model accuracy is very low
+    print("Accuracy Percentage for Linear Regression: ", format(accuracy, "%"))
+    # When calculating the error, we can see model predict off by approx $26791
+    y_pred = linear.predict(x_test)
+    error = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("${:,.02f}".format(error))
 
-# try:
+    # Now I choose Decision Tree Regressor as the new model
+    dec_tree_reg = DecisionTreeRegressor(random_state=0)
+    dec_tree_reg.fit(x_train, y_train)
+    accuracy = dec_tree_reg.score(x_test, y_test)
+    # We can see that our model accuracy is now a bit higher but it's still not enough
+    print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
+    y_pred = dec_tree_reg.predict(x_test)
+    error = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("${:,.02f}".format(error))
 
-linear = LinearRegression()
-linear.fit(x_train, y_train)
-accuracy = linear.score(x_test, y_test)
-# We can see that our model accuracy is very low
-print("Accuracy Percentage for Linear Regression: ", format(accuracy, "%"))
-# When calculating the error, we can see model predict off by approx $26791
-y_pred = linear.predict(x_test)
-error = np.sqrt(mean_squared_error(y_test, y_pred))
-print("${:,.02f}".format(error))
+    max_depth = [None, 2,4,6,8,10,12]
+    parameters = {"max_depth" : max_depth}
 
-# Now I choose Decision Tree Regressor as the new model
-dec_tree_reg = DecisionTreeRegressor(random_state=0)
-dec_tree_reg.fit(x_train, y_train)
-accuracy = dec_tree_reg.score(x_test, y_test)
-# We can see that our model accuracy is now a bit higher but it's still not enough
-print("Accuracy Percentage for Decision Tree Regressor: ", format(accuracy, "%"))
-y_pred = dec_tree_reg.predict(x_test)
-error = np.sqrt(mean_squared_error(y_test, y_pred))
-print("${:,.02f}".format(error))
+    regressor = DecisionTreeRegressor(random_state=0)
+    gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error')
+    gs.fit(x_train, y_train)
+    regressor = gs.best_estimator_
+    regressor.fit(x_train, y_train)
+    accuracy = regressor.score(x_test, y_test)
+    # We can see that our model accuracy is now a bit higher but it's still not enough
+    print("Accuracy Percentage for Decision Tree Regressor after tuning: ", format(accuracy, "%"))
+    y_pred = regressor.predict(x_test)
+    error = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("${:,.02f}".format(error))
 
-max_depth = [None, 2,4,6,8,10,12]
-parameters = {"max_depth" : max_depth}
-
-regressor = DecisionTreeRegressor(random_state=0)
-gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error')
-gs.fit(x_train, y_train)
-regressor = gs.best_estimator_
-regressor.fit(x_train, y_train)
-accuracy = regressor.score(x_test, y_test)
-# We can see that our model accuracy is now a bit higher but it's still not enough
-print("Accuracy Percentage for Decision Tree Regressor after tuning: ", format(accuracy, "%"))
-y_pred = regressor.predict(x_test)
-error = np.sqrt(mean_squared_error(y_test, y_pred))
-print("${:,.02f}".format(error))
-
-# Now I choose Random Forest Regressor
-random_forest_reg = RandomForestRegressor(random_state=0)
-random_forest_reg.fit(x_train, y_train)
-accuracy = random_forest_reg.score(x_test, y_test)
-print("Accuracy Percentage for Random Forest Regressor: ", format(accuracy, "%"))
-y_pred = random_forest_reg.predict(x_test)
-error = np.sqrt(mean_squared_error(y_test, y_pred))
-print("${:,.02f}".format(error))
-
-
-
-parameters = {"max_depth" : [None, 2,4,6,8,10,12],
-              "max_features" : ["sqrt", "log2", None],
-              "n_estimators" : [100,140,160,180,200,300]}
-
-regressor = RandomForestRegressor(random_state=0)
-gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
-gs.fit(x_train, y_train)
-regressor = gs.best_estimator_
-regressor.fit(x_train, y_train)
-accuracy = regressor.score(x_test, y_test)
-
-print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(accuracy, "%"))
-y_pred = regressor.predict(x_test)
-error = np.sqrt(mean_squared_error(y_test, y_pred))
-print("${:,.02f}".format(error))
+    # Now I choose Random Forest Regressor
+    random_forest_reg = RandomForestRegressor(random_state=0)
+    random_forest_reg.fit(x_train, y_train)
+    accuracy = random_forest_reg.score(x_test, y_test)
+    print("Accuracy Percentage for Random Forest Regressor: ", format(accuracy, "%"))
+    y_pred = random_forest_reg.predict(x_test)
+    error = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("${:,.02f}".format(error))
 
 
-# country, edLevel, yearsOfExp
-x = np.array([["United States of America", "Master's degree", 15]])
-x[:, 0] = le_country.fit_transform(x[:, 0])
-x[:, 1] = le_edu.fit_transform(x[:, 1])
-x = x.astype(float)
 
-y_pred = random_forest_reg.predict(x)
-print(y_pred)
+    parameters = {"max_depth" : [None, 2,4,6,8,10,12],
+                  "max_features" : ["sqrt", "log2", None],
+                  "n_estimators" : [100,140,160,180,200,300]}
 
-data = {"model" : regressor, "le_country" : le_country, "le_edu": le_edu}
+    regressor = RandomForestRegressor(random_state=0)
+    gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
+    gs.fit(x_train, y_train)
+    regressor = gs.best_estimator_
+    regressor.fit(x_train, y_train)
+    accuracy = regressor.score(x_test, y_test)
 
-# Write data to pickle so we don't have to train the model everytime
-with open('saved_model.pickle', "wb") as file:
-    pickle.dump(data, file)
+    print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(accuracy, "%"))
+    y_pred = regressor.predict(x_test)
+    error = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("${:,.02f}".format(error))
 
-with
+
+    # country, edLevel, yearsOfExp
+    x = np.array([["United States of America", "Master's degree", 15]])
+    x[:, 0] = le_country.fit_transform(x[:, 0])
+    x[:, 1] = le_edu.fit_transform(x[:, 1])
+    x = x.astype(float)
+
+    y_pred = random_forest_reg.predict(x)
+    print(y_pred)
+
+    data = {"model" : regressor, "le_country" : le_country, "le_edu": le_edu}
+
+    # Write data to pickle so we don't have to train the model everytime
+    with open('saved_model.pickle', 'wb') as file:
+        pickle.dump(data, file)
+
+# with open('saved_model.pickle', 'rb') as file:
+#     data = pickle.load(file)
+#
+# regressor = data['model']
+# le_country = data["le_country"]
+# le_edu = data['le_edu']
