@@ -83,7 +83,7 @@ def convert_exp(num):
 # Convert string to float
 df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
 
-# print(df.EdLevel.unique())
+print(df.EdLevel.unique())
 
 def clean_edu(x):
     if 'Bachelor’s degree' in x:
@@ -92,18 +92,18 @@ def clean_edu(x):
         return 'Master’s degree'
     if 'Professional degree' in x or 'Other doctoral' in x:
         return 'Post Grad'
-    return 'Less than a Bachelors'
+    return 'Less than a Bachelor'
 
 # reclassify education level for simplicity
 df['EdLevel'] = df['EdLevel'].apply(clean_edu)
-
+print(df.EdLevel.unique())
 # Use Label Encoder to transform string data to what computer can interpret which is numbers
-le = LabelEncoder()
+le_country = LabelEncoder()
+le_edu = LabelEncoder()
+df['EdLevel'] = le_edu.fit_transform(df['EdLevel'])
+print(df.EdLevel.unique())
 
-df['EdLevel'] = le.fit_transform(df['EdLevel'])
-# print(df.EdLevel.unique())
-
-df['Country'] = le.fit_transform(df['Country'])
+df['Country'] = le_country.fit_transform(df['Country'])
 # print(df.Country.unique())
 
 # Separate features and label
@@ -158,16 +158,16 @@ print("${:,.02f}".format(error))
 
 
 
-parameters = {"max_depth" : [None, 2,4,6,8,10,12],
-              "max_features" : ["sqrt", "log2", None],
-              "n_estimators" : [100,140,160,180,200,300]}
-
-regressor = RandomForestRegressor(random_state=0)
-gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
-gs.fit(x_train, y_train)
-regressor = gs.best_estimator_
-regressor.fit(x_train, y_train)
-accuracy = regressor.score(x_test, y_test)
+# parameters = {"max_depth" : [None, 2,4,6,8,10,12],
+#               "max_features" : ["sqrt", "log2", None],
+#               "n_estimators" : [100,140,160,180,200,300]}
+#
+# regressor = RandomForestRegressor(random_state=0)
+# gs = GridSearchCV(regressor, parameters, scoring = 'neg_mean_squared_error', verbose=True)
+# gs.fit(x_train, y_train)
+# regressor = gs.best_estimator_
+# regressor.fit(x_train, y_train)
+# accuracy = regressor.score(x_test, y_test)
 # We can see that our model accuracy is now a bit higher but it's still not enough
 print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(accuracy, "%"))
 y_pred = regressor.predict(x_test)
@@ -175,6 +175,10 @@ error = np.sqrt(mean_squared_error(y_test, y_pred))
 print("${:,.02f}".format(error))
 
 # country, edLevel, yearsOfExp
-x_test = np.array([["United States", "Master's degree", 15]])
-x_test[:, 0] = le.transform(x_test[:, 0])
-x_test[:, 0] = le.transform(x_test[:, 1])
+x = np.array([["United States of America", "Master's degree", 15]])
+x[:, 0] = le_country.fit_transform(x[:, 0])
+x[:, 1] = le_edu.fit_transform(x[:, 1])
+x = x.astype(float)
+
+y_pred = random_forest_reg.predict(x)
+print(y_pred)
