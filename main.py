@@ -173,3 +173,8 @@ print("Accuracy Percentage for Random Forest Regressor after tuning: ", format(a
 y_pred = regressor.predict(x_test)
 error = np.sqrt(mean_squared_error(y_test, y_pred))
 print("${:,.02f}".format(error))
+
+# country, edLevel, yearsOfExp
+x_test = np.array([["United States", "Master's degree", 15]])
+x_test[:, 0] = le.transform(x_test[:, 0])
+x_test[:, 0] = le.transform(x_test[:, 1])
