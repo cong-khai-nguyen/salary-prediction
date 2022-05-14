@@ -16,3 +16,32 @@ def show_predict_page():
     st.title("Software Developer Salary Prediction")
 
     st.write("""### We need some information to predict the salary""")
+
+    countries = {
+        "United States of America",
+        "India",
+        "Germany",
+        "United Kingdom of Great Britain and Northern Ireland",
+        "Canada",
+        "France",
+        "Brazil",
+        "Spain",
+        "Netherlands",
+        "Australia",
+        "Poland",
+        "Italy",
+        "Russian Federation",
+        "Sweden",
+        "Turkey",
+        "Switzerland",
+        "Israel",
+        "Norway"
+    }
+    eduction = {
+        'Master’s degree',
+        'Bachelor’s degree',
+        'Post Grad',
+        'Less than a Bachelor'
+    }
+
+    country = st.selectbox("Country", sorted(countries))
