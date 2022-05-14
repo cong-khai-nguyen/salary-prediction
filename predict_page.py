@@ -6,3 +6,13 @@ def load_model():
     with open('saved_model.pickle', 'rb') as file:
         data = pickle.load()
     return data
+
+data = load_model()
+regressor = data['model']
+le_country = data['le_country']
+le_education = data['le_education']
+
+def show_predict_page():
+    st.title("Software Developer Salary Prediction")
+
+    st.write(""""### We need some information to predict the salary""")
