@@ -52,3 +52,9 @@ def show_predict_page():
     clicked = st.button("Calculate Salary")
 
     if clicked:
+      x = np.array(country, education, experience)
+      x[:,0] = le_country.fit_transform(x[:,0])
+      x[:, 1] = le_edu.fit_transform(x[:, 1])
+      x = x.astype(float)
+      y_pred = regressor.predict(x)
+      print(y_pred)
