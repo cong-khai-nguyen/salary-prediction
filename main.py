@@ -184,24 +184,17 @@ except:
     print("${:,.02f}".format(error))
 
 
-    # country, edLevel, yearsOfExp
-    x = np.array([["United States of America", "Master's degree", 15]])
-    x[:, 0] = le_country.fit_transform(x[:, 0])
-    x[:, 1] = le_edu.fit_transform(x[:, 1])
-    x = x.astype(float)
-
-    y_pred = random_forest_reg.predict(x)
-    print(y_pred)
-
     data = {"model" : regressor, "le_country" : le_country, "le_edu": le_edu}
 
     # Write data to pickle so we don't have to train the model everytime
     with open('saved_model.pickle', 'wb') as file:
         pickle.dump(data, file)
 
-# with open('saved_model.pickle', 'rb') as file:
-#     data = pickle.load(file)
-#
-# regressor = data['model']
-# le_country = data["le_country"]
-# le_edu = data['le_edu']
+# country, edLevel, yearsOfExp
+x = np.array([["United States of America", "Master's degree", 15]])
+x[:, 0] = le_country.fit_transform(x[:, 0])
+x[:, 1] = le_edu.fit_transform(x[:, 1])
+x = x.astype(float)
+
+y_pred = regressor.predict(x)
+print(y_pred)
