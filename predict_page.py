@@ -37,7 +37,7 @@ def show_predict_page():
         "Israel",
         "Norway"
     }
-    eduction = {
+    education = {
         'Master’s degree',
         'Bachelor’s degree',
         'Post Grad',
@@ -45,3 +45,10 @@ def show_predict_page():
     }
 
     country = st.selectbox("Country", sorted(countries))
+    education = st.selectbox("Education Level", sorted(education))
+
+    experience = st.slider("Years of Experience", 0, 50, 3)
+
+    clicked = st.button("Calculate Salary")
+
+    if clicked:
