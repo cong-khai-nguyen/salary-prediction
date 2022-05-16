@@ -76,3 +76,10 @@ def show_explore_page():
 
 
     st.pyplot(fig1)
+
+    st.write(
+    """
+    ### Mean Salary Based on Country
+    """)
+    print(df.groupby(["Country"])["Salary"].mean())
+    data = df.groupby(["Country"])["Salary"].mean().sort_values(ascending=True)
