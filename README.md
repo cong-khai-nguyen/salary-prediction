@@ -4,6 +4,9 @@ https://insights.stackoverflow.com/survey
 
 https://insights.stackoverflow.com/survey/2021#overview
 
+
+https://matplotlib.org/3.5.0/gallery/pie_and_polar_charts/pie_demo2.html
+
 Some of the errors I encountered and fixes:
 1. streamlit : The term 'streamlit' is not recognized as the name 
 of a cmdlet, function, script file, or operable program. Check   
