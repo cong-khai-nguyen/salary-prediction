@@ -73,6 +73,45 @@ plt.xticks(rotation = 90)
 # plt.show()
 # Now we see fewer outliers in our data set
 
+
+def convert_exp(num):
+    if num == 'More than 50 years':
+        return 50
+    if num == 'Less than 1 year':
+        return 0.5
+    return float(num)
+
+
+# Convert string to float
+df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
+
+print(df.EdLevel.unique())
+
+
+def clean_edu(x):
+    if 'Bachelor’s degree' in x:
+        return 'Bachelor’s degree'
+    if 'Master’s degree' in x:
+        return 'Master’s degree'
+    if 'Professional degree' in x or 'Other doctoral' in x:
+        return 'Post Grad'
+    return 'Less than a Bachelor'
+
+
+# reclassify education level for simplicity
+df['EdLevel'] = df['EdLevel'].apply(clean_edu)
+print(df.EdLevel.unique())
+# Use Label Encoder to transform string data to what computer can interpret which is numbers
+le_country = LabelEncoder()
+le_edu = LabelEncoder()
+df['EdLevel'] = le_edu.fit_transform(df['EdLevel'])
+print(df.EdLevel.unique())
+
+df['Country'] = le_country.fit_transform(df['Country'])
+# print(df.Country.unique())
+
+
+
 # print(df["YearsOfExp"].unique())
 regressor = []
 le_country = []
@@ -84,37 +123,6 @@ try:
     le_country = data["le_country"]
     le_edu = data['le_edu']
 except:
-    def convert_exp(num):
-        if num == 'More than 50 years':
-            return 50
-        if num == 'Less than 1 year':
-            return 0.5
-        return float(num)
-    # Convert string to float
-    df['YearsOfExp'] = df['YearsOfExp'].apply(convert_exp)
-
-    print(df.EdLevel.unique())
-
-    def clean_edu(x):
-        if 'Bachelor’s degree' in x:
-            return 'Bachelor’s degree'
-        if 'Master’s degree' in x:
-            return 'Master’s degree'
-        if 'Professional degree' in x or 'Other doctoral' in x:
-            return 'Post Grad'
-        return 'Less than a Bachelor'
-
-    # reclassify education level for simplicity
-    df['EdLevel'] = df['EdLevel'].apply(clean_edu)
-    print(df.EdLevel.unique())
-    # Use Label Encoder to transform string data to what computer can interpret which is numbers
-    le_country = LabelEncoder()
-    le_edu = LabelEncoder()
-    df['EdLevel'] = le_edu.fit_transform(df['EdLevel'])
-    print(df.EdLevel.unique())
-
-    df['Country'] = le_country.fit_transform(df['Country'])
-    # print(df.Country.unique())
 
     # Separate features and label
     x = df.drop('Salary', axis = 1)
