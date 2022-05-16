@@ -1,6 +1,6 @@
-import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import streamlit as st
 
 
 def shorten_categories(categories, cutoff):
@@ -45,6 +45,7 @@ def load_data():
     df = df.drop("Employment", axis=1)
 
     country_map = shorten_categories(df.Country.value_counts(), 400)
+    df.Country = df.Country.map(country_map)
     df = df[df['Salary'] <= df[df.Country == 'United States of America'].Salary.median()]
     df = df[df['Salary'] >= 10000]
     df = df[df['Country'] != 'Other']
@@ -56,3 +57,22 @@ def load_data():
     return df
 
 df = load_data()
+
+def show_explore_page():
+    st.title("Explore Software Engineer Salaries")
+
+    st.write(
+        """
+        ### Stack Overflow Developer Survey 2021
+        """
+    )
+
+    data = df["Country"].value_counts()
+    fig1, ax1 = plt.subplots()
+    ax1.pie(data, labels=data.index, autopct="%1.1f%%", shadow = True, startangle = 90, textprops={'size': 'smaller'}, explode=(0.15, 0.15, 0.15, 0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15))
+    ax1.axis("equal") # Equal aspect ratio ensures that pie is drawn as a circle
+    st.write("""#### Number of Data from different countries""")
+    st.write("""*Only countries with more than or equal to 400 surveys are shown""")
+
+
+    st.pyplot(fig1)
