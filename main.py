@@ -114,13 +114,11 @@ df['Country'] = le_country.fit_transform(df['Country'])
 
 # print(df["YearsOfExp"].unique())
 regressor = []
-le_country = []
-le_edu = []
 try:
     with open('saved_model.pickle', 'rb') as file:
         data = pickle.load(file)
     regressor = data['model']
-    le_country = data["le_country"]
+    le_country = data['le_country']
     le_edu = data['le_edu']
 except:
 
@@ -200,8 +198,9 @@ except:
 
 # country, edLevel, yearsOfExp
 x = np.array([["United States of America", "Master's degree", 15]])
-x[:, 0] = le_country.fit_transform(x[:, 0])
-x[:, 1] = le_edu.fit_transform(x[:, 1])
+print(x)
+x[:, 0] = le_country.transform(x[:, 0])
+x[:, 1] = le_edu.transform(x[:, 1])
 x = x.astype(float)
 
 y_pred = regressor.predict(x)
