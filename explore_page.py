@@ -79,7 +79,15 @@ def show_explore_page():
 
     st.write(
     """
-    ### Mean Salary Based on Country
+    ### Mean Salary Based On Country
     """)
     print(df.groupby(["Country"])["Salary"].mean())
     data = df.groupby(["Country"])["Salary"].mean().sort_values(ascending=True)
+    st.bar_chart(data,width=500,height =500)
+
+    st.write("""
+    ### Mean Salary Based On Experience
+    """)
+
+    data = df.groupby(["YearsOfExp"])["Salary"].mean().sort_values(ascending=True)
+    st.line_chart(data,width=500,height =500)
