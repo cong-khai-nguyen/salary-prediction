@@ -1,5 +1,7 @@
 # Salary Prediction Engine
-Link: https://colab.research.google.com/drive/1nfWzFhaq45IVqtyp4WfFwlolt2bAiFGH#scrollTo=yiofWU3Alqt3
+Link: https://share.streamlit.io/nguyencongkhai1407/salary-prediction/main/app.py
+
+https://colab.research.google.com/drive/1nfWzFhaq45IVqtyp4WfFwlolt2bAiFGH#scrollTo=yiofWU3Alqt3
 https://insights.stackoverflow.com/survey
 
 https://insights.stackoverflow.com/survey/2021#overview
