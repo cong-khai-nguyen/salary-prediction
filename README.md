@@ -1,8 +1,11 @@
 # Salary Prediction Engine
-Link: https://share.streamlit.io/nguyencongkhai1407/salary-prediction/main/app.py
+Web: https://share.streamlit.io/nguyencongkhai1407/salary-prediction/main/app.py
 
+Google Collab Notebook: https://colab.research.google.com/drive/1nfWzFhaq45IVqtyp4WfFwlolt2bAiFGH#scrollTo=yiofWU3Alqt3
 
 # Description
+There are two parts to this project. First, I took the data, processed it and developed a regression model to predict user's data. Lastly, I designed a web application using streamlit and push my github folders to streamlit hosting cloud. 
+
 https://colab.research.google.com/drive/1nfWzFhaq45IVqtyp4WfFwlolt2bAiFGH#scrollTo=yiofWU3Alqt3
 https://insights.stackoverflow.com/survey
 
