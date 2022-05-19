@@ -21,3 +21,6 @@ the spelling of the name, or if a path was included, verify
 that the path is correct and try again.
 Solution: https://discuss.streamlit.io/t/getting-an-error-streamlit-is-not-recognized-as-an-internal-or-external-command-operable-program-or-batch-file/361/14
 
+
+# Install and Run the Project
+This project requires to imported and installed libraries: pandas, numpy, pickle, matplotlib, and scikit-learn.
