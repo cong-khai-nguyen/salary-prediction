@@ -14,10 +14,7 @@ There are two parts to this project. First, I took the data, processed it and de
 
 [Guide to draw a pie chart](https://matplotlib.org/3.5.0/gallery/pie_and_polar_charts/pie_demo2.html)
 
-https://docs.streamlit.io/library/api-reference/charts/st.bar_chart
-
-Solution: https://discuss.streamlit.io/t/getting-an-error-streamlit-is-not-recognized-as-an-internal-or-external-command-operable-program-or-batch-file/361/14
-
+[Streamlit Documentation on bar_chart](https://docs.streamlit.io/library/api-reference/charts/st.bar_chart)
 
 # Install and Run the Project
 This project requires to imported and installed libraries: pandas, numpy, pickle, matplotlib, and scikit-learn.
