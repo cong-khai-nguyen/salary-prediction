@@ -17,7 +17,7 @@ There are two parts to this project. First, I took the data, processed it and de
 [Streamlit Documentation on bar_chart](https://docs.streamlit.io/library/api-reference/charts/st.bar_chart)
 
 # Install and Run the Project
-This project requires to imported and installed libraries: pandas, numpy, pickle, matplotlib, and scikit-learn.
+This project requires to imported and installed libraries: pandas, numpy, pickle, matplotlib, streamlit and scikit-learn.
 
 # Errors that I encountered and found fix:
 1. `streamlit : The term 'streamlit' is not recognized as the name of a cmdlet, function, script file, or operable program. Check  the spelling of the name, or if a path was included, verify that the path is correct and try again.`
